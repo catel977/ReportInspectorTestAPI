@@ -41,6 +41,7 @@ namespace ReportInspectorTestAPI
 	public class Report
 	{
 		public string Text { get; set; }
+		public string ReasonForExam { get; set; }
 		public PatientInfo Patient { get; set; }
 	}
 
