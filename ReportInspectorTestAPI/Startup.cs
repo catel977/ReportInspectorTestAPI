@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,9 +37,52 @@ namespace ReportInspectorTestAPI
 				})
 				.AddJsonOptions(options =>
 					options.JsonSerializerOptions.PropertyNameCaseInsensitive = true);
+
+			services.AddAuthentication(options =>
+			{
+				options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+				options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+			}).AddJwtBearer("ReportInspectorJWT", options =>
+			{
+				options.Authority = $"https://{Configuration["Auth0:Domain"]}";
+				options.Audience = $"https://{Configuration["Auth0:Audience"]}";
+			});
+
+			services.AddAuthorization(options =>
+			{
+				options.DefaultPolicy = new AuthorizationPolicyBuilder()
+					.RequireAuthenticatedUser()
+					.AddAuthenticationSchemes("ReportInspectorJWT")
+					.Build();
+			});
+
 			services.AddSwaggerGen(c =>
 			{
 				c.SwaggerDoc("v1", new OpenApiInfo { Title = "ReportInspectorTestAPI", Version = "v1" });
+				c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+				{
+					In = ParameterLocation.Header,
+					Name = "Authorization",
+					Type = SecuritySchemeType.ApiKey,
+					Scheme = "Bearer",
+					BearerFormat = "JWT",
+					Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\""
+				});
+
+				c.AddSecurityRequirement(new OpenApiSecurityRequirement
+				{
+					{
+						new OpenApiSecurityScheme
+						{
+							Reference = new OpenApiReference
+							{
+								Id = "Bearer",
+								Type = ReferenceType.SecurityScheme
+							},
+						},
+						new List<string>()
+					}
+				});
 			});
 			services.AddSwaggerGenNewtonsoftSupport();
 		}
@@ -56,6 +101,7 @@ namespace ReportInspectorTestAPI
 
 			app.UseRouting();
 
+			app.UseAuthentication();
 			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>
