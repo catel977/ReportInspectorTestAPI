@@ -361,3 +361,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/ReportInspectorTestAPI/Properties/serviceDependencies.ReportInspectorTestAPI - Web Deploy.json
+/ReportInspectorTestAPI/Properties/serviceDependencies.json
+/ReportInspectorTestAPI/Properties/ServiceDependencies/ReportInspectorTestAPI - Web Deploy/profile.arm.json
+/ReportInspectorTestAPI/Properties/ServiceDependencies/ReportInspectorTestAPI - Web Deploy/apis1.arm.json
+/ReportInspectorTestAPI/.config/dotnet-tools.json
+/ReportInspectorTestAPI/ReportInspectorTestAPI.xml

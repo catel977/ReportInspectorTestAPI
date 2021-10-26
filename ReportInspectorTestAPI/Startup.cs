@@ -11,7 +11,9 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace ReportInspectorTestAPI
@@ -38,6 +40,10 @@ namespace ReportInspectorTestAPI
 			services.AddSwaggerGen(c =>
 			{
 				c.SwaggerDoc("v1", new OpenApiInfo { Title = "ReportInspectorTestAPI", Version = "v1" });
+				// Configure Swagger to use the xml documentation file
+				var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+				var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+				c.IncludeXmlComments(xmlPath);
 			});
 			services.AddSwaggerGenNewtonsoftSupport();
 		}
